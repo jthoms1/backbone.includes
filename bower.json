@@ -1,0 +1,14 @@
+{
+  "name": "backbone.includes",
+  "version": "0.1.0",
+  "main": "dist/backbone.includes.js",
+  "dependencies": {
+    "jquery": ">=1.6",
+    "underscore": ">=1.5",
+    "backbone": "~1.0",
+    "requirejs": "~2.1.8"
+  },
+  "devDependencies": {
+    "qunit": "~1.12.0"
+  }
+}
