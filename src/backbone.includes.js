@@ -24,6 +24,10 @@
 }(this, function(Backbone, _) {
     "use strict";
 
+    function capitaliseFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     var CommonIncludesMixin = {
         getModelName: function () {
             return this.modelName || this.model.modelName;
@@ -87,12 +91,12 @@
             }, this);
         },
         _includeMethod: function (Resource, modelName, subIncludes) {
-            var methodName = 'get' + modelName;
+            var methodName = 'get' + capitaliseFirstLetter(modelName);
 
             if (_.isArray(this.get(modelName))) {
                 methodName += 's';
             } else {
-                Resource = Resource.model || Resource;
+                Resource = Resource.prototype.model || Resource;
             }
 
             this[methodName] = this._getAttributeMethod(Resource, modelName, subIncludes);

@@ -31,12 +31,8 @@ module.exports = function (grunt) {
             }
         },
 
-        notify: {
-            watch: {
-                options: {
-                    message: 'Build successful'
-                }
-            }
+        qunit: {
+            all: ['test/*.html']
         }
     };
 
@@ -47,6 +43,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-notify');
+    grunt.loadNpmTasks('grunt-qunit');
 
     /** default includes: compiling js templates, 
      *                    compiling/concating js files with requirejs
