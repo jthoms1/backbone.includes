@@ -29,18 +29,19 @@ var OrganizationList = Backbone.Collection.extend({
 	model: Organization
 });
 
-
+/*
+ * Create model, define expected sub models/collections that will be included
+ */
 var user = new User()
 user.setIncludes(Organizations, Roles);
 user.set({
 	'id': 1,
 	'firstName': 'John',
 	'lastName': 'Jackson',
-	'organizations': [
+	'organization': [
 		{
 			'id': 1,
 			'name': 'Earthling Interactive',
-			''
 		},
 		{
 			'id': 4,
@@ -48,8 +49,8 @@ user.set({
 		}
 	],
 	'role': {
-			'id': 10,
-			'name': 'admin'
+		'id': 10,
+		'name': 'admin'
 	}
 });
 
