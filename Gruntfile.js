@@ -15,6 +15,7 @@ module.exports = function (grunt) {
          * Copy files into the production directory for use when published
          * - Will not copy css, js, templates because they are handled in other tasks
          */
+         /*
         copy: {
             options: {
                 basePath: "."
@@ -24,7 +25,7 @@ module.exports = function (grunt) {
                 {expand: true, cwd: '<%= dir.bower_components %>bootstrap/', src: 'fonts/*', dest: '<%= dir.prod %>'}
             ]
         },
-
+        */
         clean: {
             prod: {
                 src: ['<%= dir.prod %>']
@@ -43,7 +44,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-notify');
-    grunt.loadNpmTasks('grunt-qunit');
+    grunt.loadNpmTasks('grunt-contrib-qunit');
 
     /** default includes: compiling js templates, 
      *                    compiling/concating js files with requirejs
