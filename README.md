@@ -9,7 +9,8 @@ Simple library that helps manage sub models/collections within backbone.
 
 Usage
 ==================
-``` var User = Backbone.Model.extend({
+```JavaScript
+var User = Backbone.Model.extend({
 }, {
 	modelName: 'user'
 });
