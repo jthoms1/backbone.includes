@@ -11,25 +11,24 @@ module.exports = function (grunt) {
         },
         pkg: grunt.file.readJSON('package.json'),
 
-        /**
-         * Copy files into the production directory for use when published
-         * - Will not copy css, js, templates because they are handled in other tasks
-         */
-         /*
-        copy: {
+        uglify: {
             options: {
-                basePath: "."
+                banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+                    '<%= grunt.template.today("yyyy-mm-dd") %> */'
             },
-            files: [
-                {expand: true, cwd: '<%= dir.source %>', src: 'images/*', dest: '<%= dir.prod %>assets/'},
-                {expand: true, cwd: '<%= dir.bower_components %>bootstrap/', src: 'fonts/*', dest: '<%= dir.prod %>'}
-            ]
-        },
-        */
-        clean: {
-            prod: {
-                src: ['<%= dir.prod %>']
+            default: {
+                files: {
+                    '<%= dir.prod %>backbone.includes.min.js': ['<%= dir.source %>backbone.includes.js']
+                }
             }
+        },
+
+        jshint: {
+            jshintrc: ".jshintrc"
+        },
+
+        clean: {
+            src: ['<%= dir.prod %>']
         },
 
         qunit: {
@@ -41,7 +40,7 @@ module.exports = function (grunt) {
     grunt.initConfig(init);
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-notify');
     grunt.loadNpmTasks('grunt-contrib-qunit');
@@ -52,7 +51,7 @@ module.exports = function (grunt) {
      *
      * default task is ran like this: $ grunt
      */
-    grunt.registerTask('default', ['clean:prod', 'copy:prod']);
+    grunt.registerTask('default', ['clean', 'uglify']);
 
     /**
      * task includes: using jshint to lint js files
