@@ -1,3 +1,7 @@
+[![Build
+Status](https://travis-ci.org/jthoms1/backbone.includes.png?branch=master)](https://travis-ci.org/jthoms1/backbone.includes)
+
+
 backbone.includes
 =================
 
@@ -5,7 +9,7 @@ Simple library that helps manage sub models/collections within backbone.
 
 Usage
 ==================
-var User = Backbone.Model.extend({
+``` var User = Backbone.Model.extend({
 }, {
 	modelName: 'user'
 });
@@ -57,3 +61,4 @@ user.getOrganizations();
  * returns Role model containing the User's role
  */
 user.getRole();
+```

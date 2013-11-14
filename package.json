@@ -4,6 +4,10 @@
   "description": "A model/collection data management tool for Backbone.js applications.",
   "version": "0.1.0",
   "homepage": "https://github.com/jthoms1/backbone.includes",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jthoms1/backbone.includes.git"
+  },
   "dependencies": {
     "backbone": "~1.1",
     "underscore": ">=1.5"
