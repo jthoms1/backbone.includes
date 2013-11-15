@@ -61,14 +61,6 @@
                 includeList.push(includeString);
             });
             return includeList.join();
-        },
-        sync: function(method, item, options) {
-            if (this._includesList) {
-                options.data = _.extend({
-                    "includes": this._buildIncludes(this._includesList)
-                }, options.data || {});
-            }
-            return Backbone.sync.call(this, method, item, options);
         }
     };
 
@@ -117,9 +109,28 @@
                 subItem.set(_this.get(modelName));
                 return subItem;
             };
-        }
+        },
+        sync: _.wrap(Backbone.Model.prototype.sync, function (bbSync, method, item, options) {
+            if (this._includesList) {
+                options.data = _.extend({
+                    "includes": this._buildIncludes(this._includesList)
+                }, options.data || {});
+            }
+            return bbSync.call(this, method, item, options);
+        })
+    };
+
+    var CollectionIncludesMixin = {
+        sync: _.wrap(Backbone.Collection.prototype.sync, function (bbSync, method, item, options) {
+            if (this._includesList) {
+                options.data = _.extend({
+                    "includes": this._buildIncludes(this._includesList)
+                }, options.data || {});
+            }
+            return bbSync.call(this, method, item, options);
+        })
     };
 
     _.extend(Backbone.Model.prototype, ModelIncludesMixin, CommonIncludesMixin);
-    _.extend(Backbone.Collection.prototype, CommonIncludesMixin);
+    _.extend(Backbone.Collection.prototype, CollectionIncludesMixin, CommonIncludesMixin);
 }));
