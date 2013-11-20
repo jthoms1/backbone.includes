@@ -10,6 +10,9 @@ Simple library that helps manage sub models/collections within backbone.
 Usage
 ==================
 ```JavaScript
+/* static attribute modelName is used to identify the model
+ * as attribute as a sub model/collection within other models
+ */
 var User = Backbone.Model.extend({
 }, {
 	modelName: 'user'
@@ -19,12 +22,14 @@ var Role = Backbone.Model.extend({
 }, {
 	modelName: 'role'
 });
+var RoleList = Backbone.Collection.extend({
+	model: Role
+});
 
 var Organization = Backbone.Model.extend({
 }, {
 	modelName: 'organization'
 });
-
 var OrganizationList = Backbone.Collection.extend({
 	model: Organization
 });
@@ -33,7 +38,7 @@ var OrganizationList = Backbone.Collection.extend({
  * Create model, define expected sub models/collections that will be included
  */
 var user = new User()
-user.setIncludes(Organizations, Roles);
+user.setIncludes(OrganizationList, RoleList);
 user.set({
 	'id': 1,
 	'firstName': 'John',
