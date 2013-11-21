@@ -111,7 +111,7 @@
             };
         },
         sync: _.wrap(Backbone.Model.prototype.sync, function (bbSync, method, item, options) {
-            if (this._includesList) {
+            if (this._includesList && this.buildIncludes) {
                 options.data = _.extend({
                     "includes": this._buildIncludes(this._includesList)
                 }, options.data || {});
@@ -122,7 +122,7 @@
 
     var CollectionIncludesMixin = {
         sync: _.wrap(Backbone.Collection.prototype.sync, function (bbSync, method, item, options) {
-            if (this._includesList) {
+            if (this._includesList && this.buildIncludes) {
                 options.data = _.extend({
                     "includes": this._buildIncludes(this._includesList)
                 }, options.data || {});

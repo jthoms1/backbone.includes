@@ -7,35 +7,48 @@
         Roles,
         Organization,
         Organizations,
-        user;
+        user,
+        server;
 
-    module( "Model Relationship tests", {
+    module( "Model XHR tests", {
         setup: function() {
-            User = Backbone.Model.extend({}, {
-                modelName: 'user',
-                url: '/user'
+            User = Backbone.Model.extend({
+                urlRoot: '/api/user'
+            }, {
+                modelName: 'user'
             });
-            Role = Backbone.Model.extend({}, {
-                modelName: 'role',
-                url: '/role'
+            Role = Backbone.Model.extend({
+                urlRoot: '/api/role'
+            }, {
+                modelName: 'role'
             });
             Roles = Backbone.Collection.extend({
                 model: Role
             });
-            Organization = Backbone.Model.extend({}, {
-                modelName: 'organization',
-                url: '/organization'
+            Organization = Backbone.Model.extend({
+                urlRoot: '/api/organization'
+            }, {
+                modelName: 'organization'
             });
             Organizations = Backbone.Collection.extend({
                 model: Organization
             });
-            user = new User();
+
+            server = sinon.fakeServer.create();
+
+            this.setServerData = function (testData) {
+                server.respondWith("GET", "/api/user/1", [200, {
+                    "Content-Type": "application/json"
+                }, JSON.stringify(testData)]);
+            }
+        },
+        teardown: function () {
+            server.restore();
         }
     });
 
     test("object attributes are models", 4, function() {
-        user.setIncludes(Roles);
-        user.set({
+        this.setServerData({
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -45,6 +58,11 @@
             }
         });
 
+        user = new User({'id': 1});
+        user.setIncludes(Roles);
+        user.fetch();
+        server.respond();
+
         ok(user.getRole() instanceof Backbone.Model, "Is a Backbone.Model");
         ok(_.isObject(user.get('role')), "attribute still exists within model");
         equal(user.getRole().get('id'), 10, "model generated ID is the same as the attribute");
@@ -52,8 +70,7 @@
     });
 
     test("array attributes are collections", 4, function() {
-        user.setIncludes(Roles);
-        user.set({
+        this.setServerData({
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -65,6 +82,11 @@
             ]
         });
 
+        user = new User({'id': 1});
+        user.setIncludes(Roles);
+        user.fetch();
+        server.respond();
+
         ok(user.getRoles() instanceof Backbone.Collection, "Is a Backbone.Collection");
         ok(_.isArray(user.get('role')), "attribute still exists within model");
         equal(user.getRoles().at(0).get('id'), 10);
@@ -72,8 +94,7 @@
     });
 
     test("multiple relationships", 8, function () {
-        user.setIncludes(Roles, Organizations);
-        user.set({
+        this.setServerData({
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -89,6 +110,11 @@
             }
         });
 
+        user = new User({'id': 1});
+        user.setIncludes(Roles, Organizations);
+        user.fetch();
+        server.respond();
+
         ok(user.getRoles() instanceof Backbone.Collection, "Is a Backbone.Collection");
         ok(_.isArray(user.get('role')), "attribute still exists within model");
         equal(user.getRoles().at(0).get('id'), 10);
@@ -101,8 +127,7 @@
     });
 
     test("deep relationships", 8, function () {
-        user.setIncludes([Organizations, Roles]);
-        user.set({
+        this.setServerData({
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -117,6 +142,11 @@
                 ]
             }
         });
+
+        user = new User({'id': 1});
+        user.setIncludes([Organizations, Roles]);
+        user.fetch();
+        server.respond();
 
         ok(user.getOrganization() instanceof Backbone.Model, "Is a Backbone.Model");
         ok(_.isObject(user.get('organization')), "attribute still exists within model");
