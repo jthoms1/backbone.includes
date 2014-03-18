@@ -1,8 +1,8 @@
+/* global test, ok, equal, module */
 (function (Backbone, _) {
     "use strict";
 
     var User,
-        Users,
         Role,
         Roles,
         Organization,

@@ -1,8 +1,8 @@
+/* global test, ok, equal, module, sinon */
 (function (Backbone, _) {
     "use strict";
 
     var User,
-        Users,
         Role,
         Roles,
         Organization,
@@ -36,11 +36,11 @@
 
             server = sinon.fakeServer.create();
 
-            this.setServerData = function (testData) {
-                server.respondWith("GET", "/api/user/1", [200, {
+            this.setServerData = function (url, testData) {
+                server.respondWith("GET", encodeURI(url), [200, {
                     "Content-Type": "application/json"
                 }, JSON.stringify(testData)]);
-            }
+            };
         },
         teardown: function () {
             server.restore();
@@ -48,7 +48,7 @@
     });
 
     test("object attributes are models", 4, function() {
-        this.setServerData({
+        this.setServerData("/api/user/1", {
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -70,7 +70,7 @@
     });
 
     test("array attributes are collections", 4, function() {
-        this.setServerData({
+        this.setServerData("/api/user/1", {
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -94,7 +94,7 @@
     });
 
     test("multiple relationships", 8, function () {
-        this.setServerData({
+        this.setServerData("/api/user/1", {
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',
@@ -127,7 +127,7 @@
     });
 
     test("deep relationships", 8, function () {
-        this.setServerData({
+        this.setServerData("/api/user/1", {
             'id': 1,
             'firstName': 'John',
             'lastName': 'Jackson',

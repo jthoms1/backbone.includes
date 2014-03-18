@@ -11,10 +11,10 @@
 
     // Next for Node.js or CommonJS.
     } else if (typeof exports !== 'undefined') {
-        var _ = require('underscore'),
-        Backbone = require('backbone');
+        var underscore = require('underscore'),
+            Backbone = require('backbone');
 
-        factory(Backbone, _);
+        factory(Backbone, underscore);
 
     // Finally, as a browser global.
     } else {
@@ -28,6 +28,7 @@
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    // Mixin that will be used in both Models and Collections
     var CommonIncludesMixin = {
         getModelName: function () {
             return this.modelName || this.model.modelName;
@@ -49,18 +50,6 @@
             }, this);
 
             return this;
-        },
-        // Default build process for including sub models and collections
-        _buildIncludes: function (_includesList) {
-            var includeList = [];
-            _.each(_includesList, function (includedItem, modelName) {
-                var includeString = modelName;
-                if (includedItem.subIncludes.length > 0) {
-                    includeString += '/' + (includedItem.subIncludes[0].prototype.getModelName());
-                }
-                includeList.push(includeString);
-            });
-            return includeList.join();
         }
     };
 
@@ -109,28 +98,32 @@
                 subItem.set(_this.get(modelName));
                 return subItem;
             };
-        },
-        sync: _.wrap(Backbone.Model.prototype.sync, function (bbSync, method, item, options) {
-            if (this._includesList && this.buildIncludes) {
-                options.data = _.extend({
-                    "includes": this._buildIncludes(this._includesList)
-                }, options.data || {});
-            }
-            return bbSync.call(this, method, item, options);
-        })
+        }
     };
 
-    var CollectionIncludesMixin = {
-        sync: _.wrap(Backbone.Collection.prototype.sync, function (bbSync, method, item, options) {
-            if (this._includesList && this.buildIncludes) {
+    var RESTBuilderMixin = {
+        // Default build process for including sub models and collections
+        _buildIncludes: function (_includesList) {
+            var includeList = [];
+            _.each(_includesList, function (includedItem, modelName) {
+                var includeString = modelName;
+                if (includedItem.subIncludes.length > 0) {
+                    includeString += '/' + (includedItem.subIncludes[0].prototype.getModelName());
+                }
+                includeList.push(includeString);
+            });
+            return includeList.join();
+        },
+        sync: function(method, item, options) {
+            if (this._includesList && (method === 'read')) {
                 options.data = _.extend({
                     "includes": this._buildIncludes(this._includesList)
                 }, options.data || {});
             }
-            return bbSync.call(this, method, item, options);
-        })
+            return Backbone.sync.call(this, method, item, options);
+        }
     };
 
     _.extend(Backbone.Model.prototype, ModelIncludesMixin, CommonIncludesMixin);
-    _.extend(Backbone.Collection.prototype, CollectionIncludesMixin, CommonIncludesMixin);
+    _.extend(Backbone.Collection.prototype, CommonIncludesMixin);
 }));
