@@ -101,29 +101,6 @@
         }
     };
 
-    var RESTBuilderMixin = {
-        // Default build process for including sub models and collections
-        _buildIncludes: function (_includesList) {
-            var includeList = [];
-            _.each(_includesList, function (includedItem, modelName) {
-                var includeString = modelName;
-                if (includedItem.subIncludes.length > 0) {
-                    includeString += '/' + (includedItem.subIncludes[0].prototype.getModelName());
-                }
-                includeList.push(includeString);
-            });
-            return includeList.join();
-        },
-        sync: function(method, item, options) {
-            if (this._includesList && (method === 'read')) {
-                options.data = _.extend({
-                    "includes": this._buildIncludes(this._includesList)
-                }, options.data || {});
-            }
-            return Backbone.sync.call(this, method, item, options);
-        }
-    };
-
     _.extend(Backbone.Model.prototype, ModelIncludesMixin, CommonIncludesMixin);
     _.extend(Backbone.Collection.prototype, CommonIncludesMixin);
 }));
